@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ku" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HADIPRO 4K — Ultra Video Montage & Captions Studio</title>
+  <meta name="description" content="Montaja Vîdyoyan bi Kalîteya 4K, Jêrsernavên Zindî, Reng, Parzûn û Efektên Pêşketî ji bo hadiiyahya77" />
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Cyber Animated Movement Canvas (Red Particles Background) -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Hidden Source Video Element -->
+  <video id="source-video" style="display:none;" playsinline crossOrigin="anonymous"></video>
+
+  <!-- Main App Shell -->
+  <div class="app-container">
+
+    <!-- ====================================================================
+         Header Section
+         ==================================================================== -->
+    <header class="site-header">
+      <div class="header-left">
+        <div class="logo-wrap" onclick="location.reload()">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h8A2.5 2.5 0 0 1 17 6.5v11A2.5 2.5 0 0 1 14.5 20h-8A2.5 2.5 0 0 1 4 17.5v-11zm15.2.9a1 1 0 0 0-1.2.98v7.24a1 1 0 0 0 1.2.98l2.5-.83A1 1 0 0 0 22 14.82V9.18a1 1 0 0 0-.3-.71 1 1 0 0 0-.5-.27l-2-.7z"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="logo-title">HADIPRO</span>
+            <div class="logo-badge">
+              <span class="badge-4k">4K UHD</span>
+              <span>STUDIO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Load 4K Demo Reel -->
+        <button id="btn-load-demo" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span id="text-btn-demo">Vîdyoya Nimûne ya 4K</span>
+        </button>
+
+        <!-- 4K Snapshot Frame -->
+        <button id="btn-snapshot-4k" class="btn btn-secondary" title="Wêneya 4K ji Vîdyoyê Bigire (Snapshot)">
+          📸 <span>4K Snapshot</span>
+        </button>
+
+        <!-- Open Export Modal -->
+        <button id="btn-open-export" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+          <span id="text-btn-export">Daxistina 4K UHD</span>
+        </button>
+
+        <!-- UI Audio Mute / Unmute Toggle -->
+        <button id="btn-mute-sound" class="btn btn-icon" title="Dengê UI Çalak/Neçalak Bike">
+          🔊
+        </button>
+
+        <!-- Language Switcher -->
+        <button id="btn-lang-toggle" class="btn btn-secondary" style="padding: 9px 12px;">
+          🌐 Kurdî
+        </button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         Upload Hero Zone (Visible initially)
+         ==================================================================== -->
+    <section id="upload-hero" class="upload-hero">
+      <div id="upload-box" class="upload-box">
+        <input type="file" id="file-upload-input" accept="video/*" style="display:none;" />
+        
+        <div class="upload-icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-2 16l-4-4h2.5v-3h3v3H16l-4 4zm1-10V3.5L18.5 9H13z"/>
+          </svg>
+        </div>
+
+        <h1 id="text-upload-title" class="upload-title">Vîdyoya Xwe ya 4K Bar Bike</h1>
+        <p id="text-upload-sub" class="upload-subtitle">
+          Her kes dikare vîdyoyê bikişîne vir an hilbijêre da ku dest bi jêrsernavên CapCut/Hormozi, rengên sînemayî, birrîn û daxistina 4K bike!
+        </p>
+
+        <div class="upload-buttons">
+          <button class="btn btn-primary" style="padding: 13px 28px; font-size: 1rem;">
+            📁 <span id="text-btn-upload">Vîdyoyê Hilbijêre</span>
+          </button>
+        </div>
+
+        <div class="file-specs">
+          <div class="file-spec-item">✨ Diqe: <span>4K Ultra HD (3840x2160)</span></div>
+          <div class="file-spec-item">⚡ Çarçove: <span>60 FPS & 30 FPS</span></div>
+          <div class="file-spec-item">💬 Jêrsernav: <span>Viral Hormozi & Neon</span></div>
+          <div class="file-spec-item">🎬 Formad: <span>MP4 / WEBM / MOV</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Studio Workspace Layout (Visible when video loaded)
+         ==================================================================== -->
+    <main id="studio-layout" class="studio-layout">
+      
+      <!-- Top Grid: Stage + Toolbox Sidebar -->
+      <div class="studio-grid">
+        
+        <!-- Center Stage: Video Monitor & Controls -->
+        <section class="stage-panel">
+          <div class="stage-header">
+            <div class="video-info-tag">
+              <span id="video-name-badge" class="info-badge">Vîdyoya Te</span>
+              <span id="video-res-badge" class="info-badge badge-red">4K Ready</span>
+              <button id="btn-new-video" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;">
+                🔄 Vîdyoyek Nû
+              </button>
+            </div>
+
+            <!-- Aspect Ratio Selector -->
+            <div class="aspect-ratio-selector">
+              <button class="aspect-btn active" data-aspect="16:9">16:9 YT</button>
+              <button class="aspect-btn" data-aspect="9:16">9:16 Reels</button>
+              <button class="aspect-btn" data-aspect="1:1">1:1 Çargoşe</button>
+              <button class="aspect-btn" data-aspect="4:5">4:5 Insta</button>
+              <button class="aspect-btn" data-aspect="21:9">21:9 Cinema</button>
+            </div>
+          </div>
+
+          <!-- Video Canvas Monitor -->
+          <div class="canvas-wrapper">
+            <canvas id="main-canvas" width="1920" height="1080"></canvas>
+            <div class="canvas-audio-visualizer" id="canvas-visualizer"></div>
+          </div>
+
+          <!-- Playback Controls Bar -->
+          <div class="stage-controls">
+            <div class="playback-buttons">
+              <button id="btn-jump-backward" class="btn btn-secondary" title="5 Çirke Paşve">
+                ⏪ -5s
+              </button>
+              <button id="btn-step-backward" class="btn btn-secondary" title="Yek Çarçove Paşve (-1 Frame)">
+                ⏮️
+              </button>
+              <button id="btn-play-toggle" class="btn btn-primary" style="padding: 9px 24px;">
+                ▶️ Lêbide
+              </button>
+              <button id="btn-step-forward" class="btn btn-secondary" title="Yek Çarçove Pêşve (+1 Frame)">
+                ⏭️
+              </button>
+              <button id="btn-jump-forward" class="btn btn-secondary" title="5 Çirke Pêşve">
+                +5s ⏩
+              </button>
+            </div>
+
+            <!-- Time Display -->
+            <div class="time-display">
+              <span id="time-current" class="time-cur">00:00.00</span>
+              <span>/</span>
+              <span id="time-duration">00:00.00</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Sidebar: Multi-Tab Tool Suite -->
+        <aside class="sidebar-panel">
+          <!-- Tab Navigation Bar -->
+          <div class="tool-tabs">
+            <button class="tab-btn active" data-tab="captions">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 12h4v2H4v-2zm10 6H4v-2h10v2zm6 0h-4v-2h4v2zm0-4H10v-2h10v2z"/></svg>
+              <span>Jêrsernav</span>
+            </button>
+            <button class="tab-btn" data-tab="filters">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+              <span>Reng</span>
+            </button>
+            <button class="tab-btn" data-tab="effects">
+              <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+              <span>Bandor</span>
+            </button>
+            <button class="tab-btn" data-tab="audio">
+              <svg viewBox="0 0 24 24"><path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/></svg>
+              <span>Deng</span>
+            </button>
+            <button class="tab-btn" data-tab="watermark">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span>Logoy</span>
+            </button>
+          </div>
+
+          <!-- ================= TAB 1: JÊRSERNAV (CAPTIONS) ================= -->
+          <div id="tab-captions" class="tab-content active">
+            <div class="section-title">
+              <span>Şêwaza Jêrsernavan (Caption Styles)</span>
+            </div>
+
+            <!-- Styles Preset Selector -->
+            <div class="caption-styles-grid">
+              <div class="caption-style-card active" data-style="hormozi">
+                🔥 Hormozi Viral Pop
+              </div>
+              <div class="caption-style-card" data-style="neon">
+                ⚡ Cyber Red Neon
+              </div>
+              <div class="caption-style-card" data-style="karaoke">
+                🎤 Karaoke Word Flow
+              </div>
+              <div class="caption-style-card" data-style="cinematic">
+                🎬 Cinematic Movie
+              </div>
+              <div class="caption-style-card" data-style="comic">
+                💥 Comic 3D Bold
+              </div>
+            </div>
+
+            <!-- Auto Captions & Voice Recognition -->
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+              <button id="btn-auto-captions" class="btn btn-primary" style="flex:1;">
+                ✨ Jêrsernavên Xweber
+              </button>
+              <button id="btn-speech-mic" class="btn btn-secondary" title="Bi Dengê Xwe Qisê Bike">
+                🎤 Deng bo Nivîsê
+              </button>
+            </div>
+
+            <!-- Add Caption Box -->
+            <div class="caption-add-box">
+              <textarea id="caption-input" class="caption-input-text" placeholder="Nivîsa jêrsernavê li vir binivîse..."></textarea>
+              <div class="caption-time-row">
+                <input type="number" step="0.1" id="caption-start" class="caption-time-input" placeholder="Destpêk (s)" value="0.0" />
+                <input type="number" step="0.1" id="caption-end" class="caption-time-input" placeholder="Dawî (s)" value="3.0" />
+                <button id="btn-set-cur-start" class="btn btn-secondary" title="Dema Vîdyoyê ya Niha Bikar Bîne">
+                  ⏱️ Niha
+                </button>
+              </div>
+              <button id="btn-add-caption" class="btn btn-secondary" style="border-color:var(--red-neon); color:#fff;">
+                ➕ Zêde Bike bo Vîdyoyê
+              </button>
+            </div>
+
+            <!-- Styling Controls -->
+            <div class="section-group">
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Mezinahiya Fontê</span>
+                  <span id="range-caption-size-val" class="control-value">38px</span>
+                </div>
+                <input type="range" id="range-caption-size" min="18" max="72" value="38" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Cihê Y (Bilindahî li ser Ekrana Vîdyoyê)</span>
+                  <span id="range-caption-posy-val" class="control-value">80%</span>
+                </div>
+                <input type="range" id="range-caption-posy" min="20" max="95" value="80" />
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                <label style="font-size:0.8rem; color:var(--text-secondary);">Rengê Nivîsê:</label>
+                <input type="color" id="caption-text-color" value="#ffffff" style="border:none; width:34px; height:26px; border-radius:4px; cursor:pointer;" />
+                
+                <label style="font-size:0.8rem; color:var(--text-secondary);">Rengê Highlight:</label>
+                <input type="color" id="caption-hl-color" value="#ff1e42" style="border:none; width:34px; height:26px; border-radius:4px; cursor:pointer;" />
+              </div>
+            </div>
+
+            <!-- Caption List Track -->
+            <div class="section-title">
+              <span>Lîsteya Jêrsernavên Te</span>
+              <div style="display:flex; gap:6px;">
+                <label for="srt-import-input" class="btn btn-secondary" style="padding:4px 8px; font-size:0.7rem; cursor:pointer;">
+                  📥 SRT
+                </label>
+                <input type="file" id="srt-import-input" accept=".srt,.vtt" style="display:none;" />
+                <button id="btn-export-srt" class="btn btn-secondary" style="padding:4px 8px; font-size:0.7rem;">
+                  📤 SRT
+                </button>
+              </div>
+            </div>
+
+            <div id="captions-list" class="captions-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- ================= TAB 2: RENG & PARZÛN (FILTERS) ================= -->
+          <div id="tab-filters" class="tab-content">
+            <div class="section-title">
+              <span>Parzûnên Sînemayî yên 4K</span>
+              <button id="btn-reset-filters" class="btn btn-secondary" style="padding:4px 8px; font-size:0.7rem;">
+                Reset
+              </button>
+            </div>
+
+            <div class="presets-grid">
+              <div class="preset-card active" data-preset="normal">
+                <div class="preset-swatch" style="background:#555;"></div>
+                <span class="preset-name">Normal (Eslî)</span>
+              </div>
+              <div class="preset-card" data-preset="cinema">
+                <div class="preset-swatch" style="background:linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);"></div>
+                <span class="preset-name">4K Cinema Look</span>
+              </div>
+              <div class="preset-card" data-preset="cyberpunk">
+                <div class="preset-swatch" style="background:linear-gradient(45deg, #ff0055, #00f2fe);"></div>
+                <span class="preset-name">Red Cyberpunk</span>
+              </div>
+              <div class="preset-card" data-preset="noir">
+                <div class="preset-swatch" style="background:#111;"></div>
+                <span class="preset-name">Dramatic Noir</span>
+              </div>
+              <div class="preset-card" data-preset="vibrant">
+                <div class="preset-swatch" style="background:linear-gradient(45deg, #f12711, #f5af19);"></div>
+                <span class="preset-name">Vibrant Pop</span>
+              </div>
+              <div class="preset-card" data-preset="warm">
+                <div class="preset-swatch" style="background:linear-gradient(45deg, #e65c00, #F9D423);"></div>
+                <span class="preset-name">Warm Sunset</span>
+              </div>
+              <div class="preset-card" data-preset="horror">
+                <div class="preset-swatch" style="background:linear-gradient(45deg, #4d050f, #000000);"></div>
+                <span class="preset-name">Horror Crimson</span>
+              </div>
+            </div>
+
+            <!-- Fine-Tuning Sliders -->
+            <div class="section-group">
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Ronahî (Brightness)</span>
+                  <span id="range-brightness-val" class="control-value">100%</span>
+                </div>
+                <input type="range" id="range-brightness" min="0" max="200" value="100" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Dijberî (Contrast)</span>
+                  <span id="range-contrast-val" class="control-value">100%</span>
+                </div>
+                <input type="range" id="range-contrast" min="30" max="250" value="100" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Têrbûna Rengan (Saturation)</span>
+                  <span id="range-saturation-val" class="control-value">100%</span>
+                </div>
+                <input type="range" id="range-saturation" min="0" max="300" value="100" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Guhartina Reng (Hue Rotate)</span>
+                  <span id="range-hue-val" class="control-value">0°</span>
+                </div>
+                <input type="range" id="range-hue" min="0" max="360" value="0" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Tariya Qeraxan (Vignette)</span>
+                  <span id="range-vignette-val" class="control-value">0%</span>
+                </div>
+                <input type="range" id="range-vignette" min="0" max="100" value="0" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Mij & Şêlbûn (Blur)</span>
+                  <span id="range-blur-val" class="control-value">0px</span>
+                </div>
+                <input type="range" id="range-blur" min="0" max="20" value="0" />
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Klasîk (Sepia)</span>
+                  <span id="range-sepia-val" class="control-value">0%</span>
+                </div>
+                <input type="range" id="range-sepia" min="0" max="100" value="0" />
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 3: BANDOR & EFECTS ================= -->
+          <div id="tab-effects" class="tab-content">
+            <div class="section-title">
+              <span>Bandorên Vîdyoyê yên Zindî</span>
+            </div>
+
+            <div class="section-group">
+              <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="check-fx-glitch" style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>⚡ RGB Glitch & Split FX (Şikandina Rengan)</span>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="check-fx-grain" style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>🎞️ Film Grain (Xişe-xişa Fîlman)</span>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="check-fx-shake" style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>💥 Camera Shake (Lerzîna Kamerayê)</span>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="check-fx-letterbox" style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>🎬 Cinematic Letterbox Bars (Xêzên Reş ên Sînemayê)</span>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="check-fx-scanlines" style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>👾 Cyber Red Scanlines (Xêzên Cyber)</span>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                <input type="checkbox" id="check-fx-neonborder" style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>🔴 Glowing Red Neon Border (Çarçoveya Ronahî)</span>
+              </label>
+            </div>
+
+            <!-- Speed & Transforms -->
+            <div class="section-title">
+              <span>Leza Vîdyoyê (Speed Control)</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; margin-bottom:16px;">
+              <button class="btn btn-secondary speed-btn" data-speed="0.25">0.25x</button>
+              <button class="btn btn-secondary speed-btn" data-speed="0.5">0.5x</button>
+              <button class="btn btn-secondary speed-btn active" data-speed="1.0">1.0x</button>
+              <button class="btn btn-secondary speed-btn" data-speed="1.5">1.5x</button>
+              <button class="btn btn-secondary speed-btn" data-speed="2.0">2.0x</button>
+            </div>
+
+            <div class="section-group">
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Mezinbûn / Zoom</span>
+                  <span id="range-zoom-val" class="control-value">1.0x</span>
+                </div>
+                <input type="range" id="range-zoom" min="1.0" max="3.0" step="0.1" value="1.0" />
+              </div>
+
+              <div style="display:flex; gap:8px; margin-top:12px;">
+                <button id="btn-rotate-90" class="btn btn-secondary" style="flex:1;">
+                  🔄 Bizivirîne 90°
+                </button>
+                <button id="btn-flip-h" class="btn btn-secondary" style="flex:1;">
+                  🪞 Flip Horiz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 4: DENG & MUZÎK (AUDIO & SFX) ================= -->
+          <div id="tab-audio" class="tab-content">
+            <div class="section-title">
+              <span>Kontrola Dengê Vîdyoyê</span>
+            </div>
+
+            <div class="section-group">
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Hêza Dengê Vîdyoyê (Volume)</span>
+                  <span id="range-video-volume-val" class="control-value">100%</span>
+                </div>
+                <input type="range" id="range-video-volume" min="0" max="1.5" step="0.05" value="1.0" />
+              </div>
+            </div>
+
+            <!-- Built-in Cinematic SFX Board -->
+            <div class="section-title">
+              <span>Lêdana Dengên Pîşeyî (SFX Board)</span>
+            </div>
+
+            <div class="sfx-grid" style="margin-bottom:18px;">
+              <button class="sfx-btn" data-sfx="boom">
+                💥 <span>Cinematic Boom</span>
+              </button>
+              <button class="sfx-btn" data-sfx="laser">
+                ⚡ <span>Cyber Laser</span>
+              </button>
+              <button class="sfx-btn" data-sfx="shutter">
+                📸 <span>Camera Click</span>
+              </button>
+              <button class="sfx-btn" data-sfx="basshit">
+                🥁 <span>808 Trap Kick</span>
+              </button>
+              <button class="sfx-btn" data-sfx="whoosh">
+                💨 <span>Fast Whoosh</span>
+              </button>
+              <button class="sfx-btn" data-sfx="glitch">
+                👾 <span>Glitch Zap</span>
+              </button>
+            </div>
+
+            <!-- Synthesized Cyber Synth Beat -->
+            <div class="section-title">
+              <span>Muzîka Paşxanê ya Çêkirî</span>
+            </div>
+
+            <div class="section-group" style="text-align:center;">
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px;">
+                Muzîkek cyberpunk a elektronîk bi rêya Web Audio API bi vîdyoyê re lêbide!
+              </p>
+              <button id="btn-cyber-beat" class="btn btn-primary" style="width:100%;">
+                🎵 Muzîka Cyber Lêbide
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= TAB 5: LOGOY & NIVÎS (WATERMARK) ================= -->
+          <div id="tab-watermark" class="tab-content">
+            <div class="section-title">
+              <span>Logoy & Nivîsa Xwedan (Watermark)</span>
+            </div>
+
+            <div class="section-group">
+              <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="check-watermark-enable" checked style="accent-color:var(--red-neon); transform:scale(1.2);" />
+                <span>Nivîs / Logoy li ser Vîdyoyê Çalak Bike</span>
+              </label>
+
+              <div class="control-item">
+                <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Nivîsa Watermark:</label>
+                <input type="text" id="watermark-text-input" value="HADIPRO 4K | hadiiyahya77" class="caption-time-input" style="width:100%;" />
+              </div>
+
+              <div class="control-item" style="margin-top:12px;">
+                <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Cihê li ser Ekrana Vîdyoyê:</label>
+                <select id="select-watermark-pos" class="caption-time-input" style="width:100%;">
+                  <option value="bottom-right" selected>Xwarê - Rast (Bottom-Right)</option>
+                  <option value="bottom-left">Xwarê - Çep (Bottom-Left)</option>
+                  <option value="top-right">Jor - Rast (Top-Right)</option>
+                  <option value="top-left">Jor - Çep (Top-Left)</option>
+                </select>
+              </div>
+
+              <div class="control-item" style="margin-top:12px;">
+                <div class="control-label">
+                  <span>Zelalbûn (Opacity)</span>
+                  <span id="range-watermark-opacity-val" class="control-value">85%</span>
+                </div>
+                <input type="range" id="range-watermark-opacity" min="10" max="100" value="85" />
+              </div>
+
+              <div style="margin-top:14px;">
+                <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Wêneya Logoyê Bar Bike (PNG / JPG):</label>
+                <input type="file" id="watermark-logo-file" accept="image/*" class="caption-time-input" style="width:100%;" />
+              </div>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+
+      <!-- Bottom: Interactive Multi-Track Timeline & Range Trimmer -->
+      <section class="timeline-panel" id="timeline-panel">
+        <div class="timeline-header">
+          <div class="timeline-title">
+            <span>⏱️ Xêza Demê & Birrîn (Trim Timeline)</span>
+          </div>
+          <div id="timeline-trim-info" class="timeline-trim-info">
+            Dirêjahî: <span>00:00.00</span>
+          </div>
+        </div>
+
+        <!-- The Interactive Timeline Bar -->
+        <div id="timeline-container" class="timeline-container">
+          <!-- Filmstrip frames preview -->
+          <div id="timeline-filmstrip" class="timeline-filmstrip"></div>
+
+          <!-- Captions Markers Track -->
+          <div id="timeline-captions-track" class="timeline-captions-track"></div>
+
+          <!-- Selection Range Overlay -->
+          <div id="timeline-selection-range" class="timeline-selection-range"></div>
+
+          <!-- In-Point Trim Handle -->
+          <div id="trim-handle-start" class="trim-handle trim-handle-start" title="Destpêka Birrînê"></div>
+
+          <!-- Out-Point Trim Handle -->
+          <div id="trim-handle-end" class="trim-handle trim-handle-end" title="Dawiya Birrînê"></div>
+
+          <!-- Playhead Cursor -->
+          <div id="timeline-playhead" class="timeline-playhead"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ====================================================================
+         Export 4K Ultra HD Modal
+         ==================================================================== -->
+    <div id="export-modal" class="modal-backdrop">
+      <div class="export-modal-box">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span>🎬 Daxistina Vîdyoyê bi Kalîteya 4K</span>
+          </div>
+          <button id="btn-close-modal" class="btn btn-icon" style="width:32px;height:32px;">✕</button>
+        </div>
+
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:16px;">
+          Kalîte û diqeya vîdyoyê ya ku tu dixwazî daxînî hilbijêre:
+        </p>
+
+        <!-- Resolution Quality Options -->
+        <div class="quality-options-grid">
+          <div class="quality-card active" data-res="4k">
+            <div class="quality-card-title">
+              <span>🌟 4K Ultra HD</span>
+              <span class="badge-4k">ULTRA</span>
+            </div>
+            <div class="quality-card-sub">3840 x 2160 • 50 Mbps • Herî Zêde Şefaf</div>
+          </div>
+
+          <div class="quality-card" data-res="2k">
+            <div class="quality-card-title">
+              <span>⚡ 2K Quad HD</span>
+              <span class="badge-4k" style="background:#555;">2K</span>
+            </div>
+            <div class="quality-card-sub">2560 x 1440 • 25 Mbps • Kalîteya Bilind</div>
+          </div>
+
+          <div class="quality-card" data-res="1080p">
+            <div class="quality-card-title">
+              <span>📺 1080p Full HD</span>
+              <span class="badge-4k" style="background:#333;">FHD</span>
+            </div>
+            <div class="quality-card-sub">1920 x 1080 • YouTube & Standard</div>
+          </div>
+
+          <div class="quality-card" data-res="720p">
+            <div class="quality-card-title">
+              <span>🌐 720p HD</span>
+              <span class="badge-4k" style="background:#222;">HD</span>
+            </div>
+            <div class="quality-card-sub">1280 x 720 • Lezgîn bo Torên Civakî</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+          <label style="font-size:0.85rem; font-weight:700; color:var(--text-secondary);">Hêza Çarçoveyan (Frame Rate):</label>
+          <select id="select-export-fps" class="caption-time-input" style="width:140px;">
+            <option value="60" selected>60 FPS (Ultra Nerm)</option>
+            <option value="30">30 FPS (Standard)</option>
+            <option value="24">24 FPS (Cinematic Look)</option>
+          </select>
+        </div>
+
+        <button id="btn-start-export" class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;">
+          🔥 Destpêkirina Daxistina 4K
+        </button>
+
+        <!-- Progress Bar Indicator -->
+        <div id="export-progress-wrap" class="export-progress-wrap">
+          <div class="progress-header">
+            <span id="export-status-text">Çêkirina Çarçoveyan...</span>
+            <span id="export-percent-text" style="color:var(--red-bright);">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+          </div>
+        </div>
+
+        <!-- Download Finished Box -->
+        <div id="export-result-box" class="export-result-box">
+          <h3 style="font-size:1.1rem; color:#fff; margin-bottom:8px;">🎉 Vîdyoya Te ya 4K Amade ye!</h3>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:14px;">Hemî jêrsernav, parzûn û bandor bi serkeftî hatin montajkirin.</p>
+          <video id="export-preview-video" controls style="max-width:100%; max-height:200px; border-radius:8px; margin-bottom:14px; display:none;"></video>
+          <a id="btn-download-video" class="btn btn-primary" style="display:inline-flex; padding:12px 24px; text-decoration:none;">
+            ⬇️ Vîdyoya 4K Daxîne
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         Footer Section (Dedicated Branding: hadiiyahya77)
+         ==================================================================== -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo-icon" style="width:30px; height:30px;">
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="footer-logo-title">HADIPRO 4K STUDIO</span>
+        </div>
+
+        <!-- Glowing Author Badge for hadiiyahya77 -->
+        <div class="footer-author-box">
+          <span class="footer-author-label">Dirustkirin & Pêşxistin ji aliyê:</span>
+          <span class="footer-author-name">[hadiiyahya77]</span>
+          <span class="footer-badge-pill">CREATOR & PRODUCER</span>
+        </div>
+
+        <div class="footer-tags">
+          <div class="footer-tag">🔴 <span>Red & Black Studio Edition</span></div>
+          <div class="footer-tag">⚡ <span>Ultra 4K Canvas Render Engine</span></div>
+          <div class="footer-tag">💬 <span>Viral Hormozi Captions</span></div>
+          <div class="footer-tag">🔊 <span>Audio-Reactive Synthesis</span></div>
+          <div class="footer-tag">👑 <span>hadiiyahya77</span></div>
+        </div>
+
+        <div class="footer-copy">
+          © 2026 HADIPRO Studio. Hemî maf parastî ne ji bo [hadiiyahya77].
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/audio.js"></script>
+  <script src="js/captions.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
